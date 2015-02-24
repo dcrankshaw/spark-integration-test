@@ -39,6 +39,10 @@
     <scala.binary.version>2.10</scala.binary.version>
     <scala.macros.version>2.0.1</scala.macros.version>
     <chill.version>0.3.6</chill.version>
+    <dropwizard.version>0.7.1</dropwizard.version>
+    <!-- jackson version needed for jackson-scala module, should be tied to dropwizards jackson version -->
+    <!-- <jackson.version>2.5.1</jackson.version> -->
+    <jackson.version>2.4.4</jackson.version>
     <tachyon.version>0.6.0-SNAPSHOT</tachyon.version>
     <PermGen>64m</PermGen>
     <MaxPermGen>512m</MaxPermGen>
@@ -138,20 +142,84 @@
   </pluginRepositories>
 
 
-    <dependencies>
-      <!-- <dependency> -->
+  <dependencies>
+    <!-- <dependency> -->
       <!--   <groupId>org.apache.spark</groupId> -->
       <!--   <artifactId>spark&#45;mllib_${scala.binary.version}</artifactId> -->
       <!--   <!&#45;&#45; <scope>provided</scope> &#45;&#45;> -->
       <!--   <version>${spark.version}</version> -->
       <!-- </dependency> -->
-      <dependency>
-        <groupId>org.apache.spark</groupId>
-        <!-- <artifactId>spark&#45;core_${scala.binary.version}</artifactId> -->
-        <artifactId>spark-core</artifactId>
-        <!-- <scope>provided</scope> -->
-        <version>${spark.version}</version>
-      </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.massrelevance</groupId>
+      <artifactId>dropwizard-scala_${scala.binary.version}</artifactId>
+      <version>0.7.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.module</groupId>
+          <artifactId>jackson-module-scala_2.10</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+        </exclusion>
+
+      </exclusions>
+    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.fasterxml.jackson.module</groupId> -->
+    <!--   <artifactId>jackson&#45;module&#45;scala_2.10</artifactId> -->
+    <!--   <version>${jackson.version}</version> -->
+    <!-- </dependency> -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-paranamer</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_${scala.binary.version}</artifactId>
+      <!-- <artifactId>spark&#45;core</artifactId> -->
+      <!-- <scope>provided</scope> -->
+      <version>${spark.version}</version>
+      <exclusions>
+        <!-- <exclusion> -->
+        <!--   <groupId>com.fasterxml.jackson.core</groupId> -->
+        <!--   <artifactId>jackson&#45;databind</artifactId> -->
+        <!-- </exclusion> -->
+        <!-- <exclusion> -->
+        <!--   <groupId>com.fasterxml.jackson.module</groupId> -->
+        <!--   <artifactId>jackson&#45;module&#45;scala_2.10</artifactId> -->
+        <!-- </exclusion> -->
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <!-- <groupId>org.slf4j</groupId> -->
+          <!-- <artifactId>log4j&#45;over&#45;slf4j</artifactId> -->
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
 
@@ -159,6 +227,32 @@
     <outputDirectory>target/scala-${scala.binary.version}/classes</outputDirectory>
     <testOutputDirectory>target/scala-${scala.binary.version}/test-classes</testOutputDirectory>
     <plugins>
+      <plugin>
+        <groupId>com.thoughtworks.paranamer</groupId>
+        <artifactId>paranamer-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run</id>  <!-- id is optional -->
+            <configuration>
+              <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            </configuration>        
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <!-- if some of parameter names you need to retain are held in pre-existing jars, they need to be added to the classpath -->
+          <!-- <dependency> -->
+          <!--   <groupId>some&#45;artifact&#45;group</groupId> -->
+          <!--   <artifactId>some&#45;artifact</artifactId> -->
+          <!--   <version>1.0</version> -->
+          <!-- </dependency> -->
+        </dependencies>
+      </plugin>
+
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -190,6 +284,13 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <shadedArtifactId>artifact-shaded</shadedArtifactId>
+              <relocations>
+                <relocation>
+                  <pattern>com.thoughtworks.paranamer</pattern>
+                  <shadedPattern>edu.berkeley.velox.paranamer</shadedPattern>
+                </relocation>
+              </relocations>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -235,9 +336,10 @@
           <recompileMode>incremental</recompileMode>
           <useZincServer>true</useZincServer>
           <args>
-            <arg>-unchecked</arg>
-            <arg>-deprecation</arg>
-            <arg>-feature</arg>
+            <!-- <arg>&#45;unchecked</arg> -->
+            <!-- <arg>&#45;deprecation</arg> -->
+            <!-- <arg>&#45;feature</arg> -->
+            <arg>-g:vars</arg>
           </args>
           <jvmArgs>
             <jvmArg>-Xms1024m</jvmArg>

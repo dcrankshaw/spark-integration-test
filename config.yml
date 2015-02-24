@@ -1,0 +1,15 @@
+
+sparkMaster: spark://ec2-54-87-179-93.compute-1.amazonaws.com:7077
+# test: 10
+
+# server:
+#   requestLog:
+#     timeZone: UTC
+#     appenders:
+#       - type: file
+#         currentLogFilename: ./logs/requests.log
+#         threshold: ALL
+#         archive: true
+#         archivedLogFilenamePattern: ./logs/requests.%d.log.gz
+#         archivedFileCount: 5
+#
