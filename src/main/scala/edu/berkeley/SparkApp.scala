@@ -12,11 +12,13 @@ import scala.collection.immutable.TreeMap
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
+import org.apache.spark.SparkConf
 import io.dropwizard.Configuration
-// import io.dropwizard.Application
+import io.dropwizard.Application
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import javax.validation.constraints.NotNull
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 // import org.hibernate.validator.constraints.NotEmpty
 //
 // import javax.validation.Valid
@@ -29,8 +31,8 @@ import javax.ws.rs.PathParam
 // import javax.ws.rs.Produces
 // import javax.ws.rs.core.MediaType
 import java.util._
-import com.massrelevance.dropwizard.ScalaApplication
-import com.massrelevance.dropwizard.bundles.ScalaBundle
+// import com.massrelevance.dropwizard.ScalaApplication
+// import com.massrelevance.dropwizard.bundles.ScalaBundle
 import com.fasterxml.jackson.annotation.JsonProperty
 
 
@@ -47,6 +49,12 @@ class SparkProgResource(sparkMaster: String) {
   def runSpark: String = {
     val sparkHome = "/root/spark"
     println("Starting spark context")
+    val conf = new SparkConf()
+      .setMaster(sparkMaster)
+      .setAppName("SparkTestApp")
+      .setJars(SparkContext.jarOfObject(this).toSeq)
+      .setSparkHome(sparkHome)
+      // .set("spark.akka.logAkkaConfig", "true")
     val sc = new SparkContext(sparkMaster, "SparkTestApp", sparkHome,
         SparkContext.jarOfObject(this).toSeq)
     println("Parallelizing data")
@@ -55,21 +63,29 @@ class SparkProgResource(sparkMaster: String) {
     println(s"Top is: ${data.top(10)}")
     sc.stop()
     println("Done")
-    "Hello World"
+    "Hello World\n"
 
   }
 
 }
 
+object MyMain {
 
+  final def main(args: Array[String]) {
+    new TestApp().run(args)
+  }
 
-object TestApp extends ScalaApplication[TestConf] {
+}
 
-  val sparkMaster = "spark://ec2-54-87-179-93.compute-1.amazonaws.com:7077"
+class TestApp extends Application[TestConf] {
+
+  // val sparkMaster = "spark://ec2-54-87-179-93.compute-1.amazonaws.com:7077"
+
 
 
     override def initialize(bootstrap: Bootstrap[TestConf]) {
-        bootstrap.addBundle(new ScalaBundle)
+        // bootstrap.addBundle(new ScalaBundle)
+       bootstrap.getObjectMapper.registerModule(new DefaultScalaModule()) 
 
     }
 
@@ -77,7 +93,7 @@ object TestApp extends ScalaApplication[TestConf] {
     override def run(conf: TestConf, env: Environment) {
 
         // env.jersey().register(new SparkProgResource(conf.sparkMaster))
-        env.jersey().register(new SparkProgResource(sparkMaster))
+        env.jersey().register(new SparkProgResource(conf.sparkMaster))
     }
 
 }

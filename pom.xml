@@ -143,58 +143,52 @@
 
 
   <dependencies>
-    <!-- <dependency> -->
-      <!--   <groupId>org.apache.spark</groupId> -->
-      <!--   <artifactId>spark&#45;mllib_${scala.binary.version}</artifactId> -->
-      <!--   <!&#45;&#45; <scope>provided</scope> &#45;&#45;> -->
-      <!--   <version>${spark.version}</version> -->
-      <!-- </dependency> -->
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
       <version>${dropwizard.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.massrelevance</groupId>
-      <artifactId>dropwizard-scala_${scala.binary.version}</artifactId>
-      <version>0.7.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>log4j-over-slf4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.fasterxml.jackson.module</groupId>
-          <artifactId>jackson-module-scala_2.10</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-annotations</artifactId>
-        </exclusion>
-
-      </exclusions>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.massrelevance</groupId> -->
+    <!--   <artifactId>dropwizard&#45;scala_${scala.binary.version}</artifactId> -->
+    <!--   <version>0.7.1</version> -->
+    <!--   <exclusions> -->
+    <!--     <exclusion> -->
+    <!--       <groupId>org.slf4j</groupId> -->
+    <!--       <artifactId>log4j&#45;over&#45;slf4j</artifactId> -->
+    <!--     </exclusion> -->
+    <!--     <exclusion> -->
+    <!--       <groupId>com.fasterxml.jackson.core</groupId> -->
+    <!--       <artifactId>jackson&#45;core</artifactId> -->
+    <!--     </exclusion> -->
+    <!--     <exclusion> -->
+    <!--       <groupId>com.fasterxml.jackson.core</groupId> -->
+    <!--       <artifactId>jackson&#45;databind</artifactId> -->
+    <!--     </exclusion> -->
+    <!--     <exclusion> -->
+    <!--       <groupId>com.fasterxml.jackson.module</groupId> -->
+    <!--       <artifactId>jackson&#45;module&#45;scala_2.10</artifactId> -->
+    <!--     </exclusion> -->
+    <!--     <exclusion> -->
+    <!--       <groupId>com.fasterxml.jackson.core</groupId> -->
+    <!--       <artifactId>jackson&#45;annotations</artifactId> -->
+    <!--     </exclusion> -->
+    <!--  -->
+    <!--   </exclusions> -->
+    <!-- </dependency> -->
     <!-- <dependency> -->
     <!--   <groupId>com.fasterxml.jackson.module</groupId> -->
-    <!--   <artifactId>jackson&#45;module&#45;scala_2.10</artifactId> -->
+    <!--   <artifactId>jackson&#45;module&#45;paranamer</artifactId> -->
     <!--   <version>${jackson.version}</version> -->
     <!-- </dependency> -->
     <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-paranamer</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
@@ -215,8 +209,6 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
-          <!-- <groupId>org.slf4j</groupId> -->
-          <!-- <artifactId>log4j&#45;over&#45;slf4j</artifactId> -->
         </exclusion>
       </exclusions>
     </dependency>
@@ -227,30 +219,30 @@
     <outputDirectory>target/scala-${scala.binary.version}/classes</outputDirectory>
     <testOutputDirectory>target/scala-${scala.binary.version}/test-classes</testOutputDirectory>
     <plugins>
-      <plugin>
-        <groupId>com.thoughtworks.paranamer</groupId>
-        <artifactId>paranamer-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run</id>  <!-- id is optional -->
-            <configuration>
-              <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-            </configuration>        
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <!-- if some of parameter names you need to retain are held in pre-existing jars, they need to be added to the classpath -->
-          <!-- <dependency> -->
-          <!--   <groupId>some&#45;artifact&#45;group</groupId> -->
-          <!--   <artifactId>some&#45;artifact</artifactId> -->
-          <!--   <version>1.0</version> -->
-          <!-- </dependency> -->
-        </dependencies>
-      </plugin>
+      <!-- <plugin> -->
+      <!--   <groupId>com.thoughtworks.paranamer</groupId> -->
+      <!--   <artifactId>paranamer&#45;maven&#45;plugin</artifactId> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--       <id>run</id>  <!&#45;&#45; id is optional &#45;&#45;> -->
+      <!--       <configuration> -->
+      <!--         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory> -->
+      <!--         <outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
+      <!--       </configuration>         -->
+      <!--       <goals> -->
+      <!--         <goal>generate</goal> -->
+      <!--       </goals> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!--   <dependencies> -->
+      <!--     <!&#45;&#45; if some of parameter names you need to retain are held in pre&#45;existing jars, they need to be added to the classpath &#45;&#45;> -->
+      <!--     <!&#45;&#45; <dependency> &#45;&#45;> -->
+      <!--     <!&#45;&#45;   <groupId>some&#38;#45;artifact&#38;#45;group</groupId> &#45;&#45;> -->
+      <!--     <!&#45;&#45;   <artifactId>some&#38;#45;artifact</artifactId> &#45;&#45;> -->
+      <!--     <!&#45;&#45;   <version>1.0</version> &#45;&#45;> -->
+      <!--     <!&#45;&#45; </dependency> &#45;&#45;> -->
+      <!--   </dependencies> -->
+      <!-- </plugin> -->
 
 
       <plugin>
@@ -286,10 +278,10 @@
             <configuration>
               <shadedArtifactId>artifact-shaded</shadedArtifactId>
               <relocations>
-                <relocation>
-                  <pattern>com.thoughtworks.paranamer</pattern>
-                  <shadedPattern>edu.berkeley.velox.paranamer</shadedPattern>
-                </relocation>
+                <!-- <relocation> -->
+                <!--   <pattern>com.thoughtworks.paranamer</pattern> -->
+                <!--   <shadedPattern>edu.berkeley.velox.paranamer</shadedPattern> -->
+                <!-- </relocation> -->
               </relocations>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
