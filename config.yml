@@ -1,5 +1,5 @@
 
-sparkMaster: spark://ec2-54-205-168-96.compute-1.amazonaws.com:7077
+sparkMaster: spark://ec2-54-145-144-138.compute-1.amazonaws.com:7077
 # test: 10
 
 # server:

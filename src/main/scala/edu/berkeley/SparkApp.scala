@@ -47,7 +47,7 @@ class SparkProgResource(sparkMaster: String) {
 
   @GET
   def runSpark: String = {
-    val sparkHome = "/root/spark"
+    val sparkHome = "/root/spark-1.3.0-bin-hadoop1"
     println("Starting spark context")
     val conf = new SparkConf()
       .setMaster(sparkMaster)
@@ -61,6 +61,7 @@ class SparkProgResource(sparkMaster: String) {
     val data = sc.parallelize((0 to 5000))
     println(s"Counting data ${data.count}")
     println(s"Top is: ${data.top(10)}")
+    data.saveAsTextFile("hdfs://ec2-54-145-144-138.compute-1.amazonaws.com:9000/writetest/data")
     sc.stop()
     println("Done")
     "Hello World\n"
